@@ -125,6 +125,14 @@ typedef struct {
 } sf2d_vertex_pos_tex;
 
 /**
+ * @brief Represents a text vertex
+ */
+typedef struct{
+	float position[3];
+	float texcoord[2];
+} sf2d_txt_vertex_s;
+
+/**
  * @brief Represents a texture
  */
 
@@ -730,6 +738,28 @@ gfxScreen_t sf2d_get_current_screen();
  * @note The returned value can be GFX_LEFT or GFX_RIGHT.
  */
 gfx3dSide_t sf2d_get_current_side();
+
+extern int projection_desc;
+
+/**
+ * @brief Initializes system font
+ */
+void sf2d_sfont_init(void);
+
+/**
+ * @brief Deinitializes system font
+ */
+void sf2d_sfont_fini(void);
+
+/**
+ * @brief Draws text using the system font
+ * @param x the starting x coordinate of the text
+ * @param y the starting y coordinate of the text
+ * @param size the scale factor of the text
+ * @param color the color of the text to be drawn
+ * @param text the text to be drawn
+ */
+void sf2d_sfont_draw_text(float x, float y, float size, u32 color, const char* text);
 
 #ifdef __cplusplus
 }

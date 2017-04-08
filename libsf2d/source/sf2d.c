@@ -2,6 +2,10 @@
 #include "sf2d.h"
 #include "shader_shbin.h"
 
+#define DISPLAY_TRANSFER_FLAGS \
+	(GX_TRANSFER_FLIP_VERT(0) | GX_TRANSFER_OUT_TILED(0) | GX_TRANSFER_RAW_COPY(0) | \
+	GX_TRANSFER_IN_FORMAT(GX_TRANSFER_FMT_RGBA8) | GX_TRANSFER_OUT_FORMAT(GX_TRANSFER_FMT_RGB8) | \
+	GX_TRANSFER_SCALING(GX_TRANSFER_SCALE_NO))
 
 static int sf2d_initialized = 0;
 // Temporary memory pool
@@ -20,7 +24,7 @@ static gfx3dSide_t cur_side = GFX_LEFT;
 //Shader stuff
 static DVLB_s *dvlb = NULL;
 static shaderProgram_s shader;
-static int projection_desc = -1;
+int projection_desc = -1;
 static int transform_desc = -1;
 static int useTransform_desc = -1;
 //Rendertarget things
@@ -49,9 +53,9 @@ int sf2d_init_advanced(int gpucmd_size, int temppool_size)
 	targetTopRight = sf2d_create_rendertarget(400, 240);
 	targetBottom   = sf2d_create_rendertarget(320, 240);
 	sf2d_set_clear_color(0);
-	C3D_RenderTargetSetOutput(targetTopLeft->target,  GFX_TOP,    GFX_LEFT,  0x1000);
-	C3D_RenderTargetSetOutput(targetTopRight->target, GFX_TOP,    GFX_RIGHT, 0x1000);
-	C3D_RenderTargetSetOutput(targetBottom->target,   GFX_BOTTOM, GFX_LEFT,  0x1000);
+	C3D_RenderTargetSetOutput(targetTopLeft->target,  GFX_TOP,    GFX_LEFT,  DISPLAY_TRANSFER_FLAGS);
+	C3D_RenderTargetSetOutput(targetTopRight->target, GFX_TOP,    GFX_RIGHT, DISPLAY_TRANSFER_FLAGS);
+	C3D_RenderTargetSetOutput(targetBottom->target,   GFX_BOTTOM, GFX_LEFT,  DISPLAY_TRANSFER_FLAGS);
 
 	//Setup temp pool
 	pool_addr = linearAlloc(temppool_size);

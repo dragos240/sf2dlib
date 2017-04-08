@@ -30,7 +30,7 @@ int main()
 	sf2d_init();
 	sf2d_set_clear_color(RGBA8(0x40, 0x40, 0x40, 0xFF));
 	sf2d_set_3D(1);
-
+	sf2d_sfont_init();
 
 	sf2d_texture *tex1 = sf2d_create_texture_mem_RGBA8(dice_img.pixel_data, dice_img.width, dice_img.height, TEXFMT_RGBA8, SF2D_PLACE_RAM);
 	sf2d_texture *tex2 = sf2d_create_texture_mem_RGBA8(citra_img.pixel_data, citra_img.width, citra_img.height, TEXFMT_RGBA8, SF2D_PLACE_RAM);
@@ -88,6 +88,7 @@ int main()
 			sf2d_draw_texture_rotate(tex2, touch_x, touch_y, -rad);
 			sf2d_draw_rectangle(160-15 + cosf(rad)*50.0f, 120-15 + sinf(rad)*50.0f, 30, 30, RGBA8(0x00, 0xFF, 0xFF, 0xFF));
 			sf2d_draw_fill_circle(40, 40, 35, RGBA8(0x00, 0xFF, 0x00, 0xFF));
+			sf2d_sfont_draw_text(8.0f, 8.0f, 0.5f, RGBA8(0xFF, 0x00, 0x00, 0xFF), "Here is some test text!");
 		sf2d_end_frame();
 
 		rad += 0.2f;
@@ -98,6 +99,7 @@ int main()
 	sf2d_free_texture(tex1);
 	sf2d_free_texture(tex2);
 
+	sf2d_sfont_fini();
 	sf2d_fini();
 	return 0;
 }
