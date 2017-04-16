@@ -69,6 +69,7 @@ int main()
 			sf2d_draw_rectangle(offset3d + 20, 60, 40, 40, RGBA8(0xFF, 0x00, 0x00, 0xFF));
 			sf2d_draw_rectangle(offset3d + 5, 5, 30, 30, RGBA8(0x00, 0xFF, 0xFF, 0xFF));
 			sf2d_draw_texture_rotate(tex1, offset3d + 400/2 + circle.dx, 240/2 - circle.dy, rad);
+			sf2d_sfont_draw_text(8.0f, 8.0f, 0.75f, RGBA8(0xFF, 0x00, 0x00, 0xFF), "Top text!");
 		sf2d_end_frame();
 
 		sf2d_start_frame(GFX_TOP, GFX_RIGHT);
@@ -80,6 +81,7 @@ int main()
 			sf2d_draw_rectangle(20, 60, 40, 40, RGBA8(0xFF, 0x00, 0x00, 0xFF));
 			sf2d_draw_rectangle(5, 5, 30, 30, RGBA8(0x00, 0xFF, 0xFF, 0xFF));
 			sf2d_draw_texture_rotate(tex1, 400/2 + circle.dx, 240/2 - circle.dy, rad);
+			sf2d_sfont_draw_text(9.0f, 8.0f, 0.75f, RGBA8(0xff, 0x00, 0x00, 0xff), "Top text!");
 		sf2d_end_frame();
 
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -88,7 +90,7 @@ int main()
 			sf2d_draw_texture_rotate(tex2, touch_x, touch_y, -rad);
 			sf2d_draw_rectangle(160-15 + cosf(rad)*50.0f, 120-15 + sinf(rad)*50.0f, 30, 30, RGBA8(0x00, 0xFF, 0xFF, 0xFF));
 			sf2d_draw_fill_circle(40, 40, 35, RGBA8(0x00, 0xFF, 0x00, 0xFF));
-			sf2d_sfont_draw_text(8.0f, 8.0f, 0.5f, RGBA8(0xFF, 0x00, 0x00, 0xFF), "Here is some test text!");
+			sf2d_sfont_draw_text(8.0f, 8.0f, 0.75f, RGBA8(0xFF, 0x00, 0x00, 0xFF), "Here is some test text!");
 		sf2d_end_frame();
 
 		rad += 0.2f;

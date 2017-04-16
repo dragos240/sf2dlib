@@ -1,21 +1,27 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include <citro3d.h>
 
 #include "sf2d.h"
 
+typedef struct{
+	const char* str;
+	sf2d_txt_vertex_s* textVtxArray;
+} text_t;
+
 static C3D_Tex* glyphSheets;
-static sf2d_txt_vertex_s* textVtxArray;
 static int textVtxArrayPos;
 static C3D_Mtx projection;
+static int num_strs = 0;
+text_t* texts = NULL;
+static bool matchFound;
+sf2d_txt_vertex_s* textVtxArray;
 
 #define TEXT_VTX_ARRAY_COUNT (4*1024)
 
 void sf2d_sfont_init(void)
 {
-	// Compute the projection matrix
-	Mtx_OrthoTilt(&projection, 0.0, 400.0, 240.0, 0.0, 0.0, 1.0, true);
-	Mtx_OrthoTilt(&projection, 0.0, 320.0, 240.0, 0.0, 0.0, 1.0, true);
 	fontEnsureMapped();
 
 	// Load the glyph texture sheets
@@ -33,9 +39,6 @@ void sf2d_sfont_init(void)
 		tex->param = GPU_TEXTURE_MAG_FILTER(GPU_LINEAR) | GPU_TEXTURE_MIN_FILTER(GPU_LINEAR)
 			| GPU_TEXTURE_WRAP_S(GPU_CLAMP_TO_EDGE) | GPU_TEXTURE_WRAP_T(GPU_CLAMP_TO_EDGE);
 	}
-
-	// Create the text vertex array
-	textVtxArray = (sf2d_txt_vertex_s*)linearAlloc(sizeof(sf2d_txt_vertex_s)*TEXT_VTX_ARRAY_COUNT);
 }
 
 void sf2d_sfont_fini(void)
@@ -54,16 +57,41 @@ static void _sf2d_sfont_add_text_vertex(float vx, float vy, float tx, float ty)
 	vtx->texcoord[1] = ty;
 }
 
-static void _sf2d_sfont_clear_text_vtx_array(){
-	textVtxArrayPos = 0;
-}
-
 void sf2d_sfont_draw_text(float x, float y, float size, u32 color, const char* text){
 	ssize_t  units;
 	uint32_t code;
 
-	_sf2d_sfont_clear_text_vtx_array();
+	// Compute the projection matrix
+	Mtx_OrthoTilt(&projection, 0.0, 400.0, 240.0, 0.0, 0.0, 1.0, true);
+	Mtx_OrthoTilt(&projection, 0.0, 320.0, 240.0, 0.0, 0.0, 1.0, true);
 	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, projection_desc, &projection);
+
+	int i;
+	matchFound = false;
+	for(i = 0; i < num_strs; i++){
+		text_t text_inst = texts[i];
+		if(strcmp(text, text_inst.str) == 0){
+			//Match found, don't allocate more memory!
+			matchFound = true;
+			break;
+		}
+	}
+	if(matchFound == false){
+		//allocate space for new string
+		if(texts == NULL)
+			texts = malloc(sizeof(text_t));
+		else
+			texts = realloc(texts, (num_strs+1)*sizeof(text_t));
+		num_strs++;
+		texts[num_strs-1].str = text;
+		// Create the text vertex array
+		textVtxArray = (sf2d_txt_vertex_s*)linearAlloc(sizeof(sf2d_txt_vertex_s)*TEXT_VTX_ARRAY_COUNT);
+		texts[num_strs-1].textVtxArray = textVtxArray;
+	}
+	else{
+		textVtxArray = texts[i].textVtxArray;
+	}
+	textVtxArrayPos = 0;
 	
 	// Configure attributes for use with the vertex shader
 	C3D_AttrInfo* attrInfo = C3D_GetAttrInfo();
