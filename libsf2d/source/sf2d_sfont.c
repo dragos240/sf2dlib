@@ -7,6 +7,8 @@
 
 typedef struct{
 	const char* str;
+	int x;
+	int y;
 	sf2d_txt_vertex_s* textVtxArray;
 } text_t;
 
@@ -70,7 +72,7 @@ void sf2d_sfont_draw_text(float x, float y, float size, u32 color, const char* t
 	matchFound = false;
 	for(i = 0; i < num_strs; i++){
 		text_t text_inst = texts[i];
-		if(strcmp(text, text_inst.str) == 0){
+		if(strcmp(text, text_inst.str) == 0 && text_inst.x == x && text_inst.y == y){
 			//Match found, don't allocate more memory!
 			matchFound = true;
 			break;
@@ -86,6 +88,8 @@ void sf2d_sfont_draw_text(float x, float y, float size, u32 color, const char* t
 		texts[num_strs-1].str = text;
 		// Create the text vertex array
 		textVtxArray = (sf2d_txt_vertex_s*)linearAlloc(sizeof(sf2d_txt_vertex_s)*TEXT_VTX_ARRAY_COUNT);
+		texts[num_strs-1].x = x;
+		texts[num_strs-1].y = y;
 		texts[num_strs-1].textVtxArray = textVtxArray;
 	}
 	else{
